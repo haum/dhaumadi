@@ -20,6 +20,7 @@ int getValue() {
 }
 
 void loop() {
+  const int dly = 5;
   int idx_a_zero = 0;
   for (auto pin_a_zero : pins) {
     pinMode(pin_a_zero, OUTPUT);
@@ -34,11 +35,11 @@ void loop() {
     Serial.println(value);
     
     ++idx_a_zero;
-    delay(20);
+    delay(dly);
   }
 
   int value = getValue();
   Serial.print("- ");
   Serial.println(value);
-  delay(20);
+  delay(dly);
 }
