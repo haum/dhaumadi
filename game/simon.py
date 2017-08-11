@@ -71,7 +71,7 @@ class Simon:
         self.added_complexity = 0
         self.succeses_since_complexity_bump = 0
 
-        self.seq.play()
+        self.seq.play(self.audio)
 
     def process_line(self, line):
         """
