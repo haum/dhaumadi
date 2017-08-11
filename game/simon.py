@@ -26,7 +26,7 @@ from audio import AsciiAudio
 import settings
 
 
-class Game:
+class Simon:
 
     def __init__(self, pads_settings=settings.PRIMARY_PADS, initial_complexity=2,
             initial_length=1, end_of_game=42, audio=AsciiAudio()):
@@ -67,7 +67,7 @@ class Game:
 
         self.seq.play()
 
-    def process_input(self, line):
+    def process_line(self, line):
         """
         Choosen strategy :
 
@@ -121,7 +121,7 @@ class Game:
         """ Read lines on standard input and process them """
         self.__flush_stdin()
         for line in sys.stdin:
-            self.process_input(line.strip())
+            self.process_line(line.strip())
 
     def __flush_stdin(self):
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)

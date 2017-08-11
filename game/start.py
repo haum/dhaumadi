@@ -19,13 +19,13 @@ import logging
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-from simon import Game
+from simon import Simon
 from settings import PRIMARY_PADS
 from audio import AsciiAudio
 
 
 def main():
-    game = Game(
+    game = Simon(
         pads_settings=PRIMARY_PADS,
         initial_complexity=2,
         initial_length=1,
