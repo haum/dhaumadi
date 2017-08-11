@@ -46,6 +46,12 @@ class Sequence:
     def __len__(self):
         return len(self.seq)
 
+    def str_combination(self, n):
+        if n > -1 and n < len(self.seq):
+            return ' '.join(map(str, self.seq[n]))
+        else:
+            return None
+
     def lengthen(self, n=1, added_complexity=0):
         """
         Lengthen by n the sequence.
@@ -96,4 +102,4 @@ class Sequence:
 
         for seqitem in self.seq:
             self.play_item(seqitem, audio_out=audio_out)
-        logging.debug(f"Expected sequence: {str(self)}")
+        logging.debug(f"Expected and played sequence: \n {str(self)}")

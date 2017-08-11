@@ -53,10 +53,10 @@ class Simon:
         self.reinit_game()
 
     def __str__(self):
-        return '\n' + str(self.seq) + '\n' + "(pointing at combination no " + str(self.__seq_pointer) + ')'
+        return str(self.seq) + '\n' + "(sequence length " + str(len(self.seq)) + ')'
     
     def __repr__(seq):
-         return '\n' + repr(self.seq) + '\n' + "(pointing at combination no " + repr(self.__seq_pointer) + ')'
+         return repr(self.seq) + '\n' + "(pointing at combination no " + repr(len(self.seq)) + ')'
 
     def reinit_game(self, initial_complexity=None, initial_length=None):
 
@@ -112,14 +112,17 @@ class Simon:
                 self.win()
             if self.__seq_pointer == len(self.seq):
                 self.ack_seq()
+                self.__seq_pointer = 0
                 if self.succeses_since_complexity_bump == 2:
                     self.added_complexity += 1
                     self.succeses_since_complexity_bump = 0
                 else:
                     self.succeses_since_complexity_bump += 1
                 self.seq.lengthen(1, added_complexity=self.added_complexity)
-                logging.debug(f"Expected sequence: {str(self)}")
+                logging.debug(f"Expected sequence: \n {str(self)}")
                 self.seq.play(self.audio)
+            else:
+                logging.debug(f"Expected combination no {str(self.__seq_pointer)}: {self.seq.str_combination(self.__seq_pointer)}")
         else:
             return
 
