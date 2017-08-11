@@ -129,7 +129,7 @@ class Simon:
     def win(self):
         """ Animation to play when the game is finished """
         self.__flush_stdin()
-        logging.logger("Win !")
+        logging.info("Win !")
         pass
 
     def ack_seq(self):
