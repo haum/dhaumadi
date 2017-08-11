@@ -49,6 +49,7 @@ class Simon:
         self.initial_length = initial_length
         self.end_of_game = end_of_game
         self.audio = audio
+        self.playing = False
 
         self.reinit_game()
 
@@ -65,6 +66,8 @@ class Simon:
         if initial_length is not None:
             self.initial_length = initial_length
 
+        self.playing = True
+        
         self.seq = Sequence(self.__pads, min_combo=self.initial_complexity)
         self.seq.lengthen(n=self.initial_length)
         self.__seq_pointer = 0
@@ -74,56 +77,63 @@ class Simon:
         self.seq.play(self.audio)
 
     def process_line(self, line):
-        """
-        Choosen strategy :
+        if self.playing:
+            """
+            Choosen strategy :
 
-        1. empty lines are ignored
-        2. if a pad not expected is touched => game over
-        3. if expected pads are touched but not all linked => wait next line for confirmation
-        4. if all expected pads are linked together => got to next item
-        """
-        # 1. filter out useless
-        if line.strip() == '':
-            return
+            1. empty lines are ignored
+            2. if a pad not expected is touched => game over
+            3. if expected pads are touched but not all linked => wait next line for confirmation
+            4. if all expected pads are linked together => got to next item
+            """
+            # 1. filter out useless
+            if line.strip() == '':
+                return
 
-        # make some noise to show we got something
-        groups = line.split(' ')
-        for g in groups:
-            self.seq.play_item(list(g), self.audio)
+            # make some noise to show we got something
+            groups = line.split(' ')
+            for g in groups:
+                self.seq.play_item(list(g), self.audio)
 
-        # 2. check if players lost
-        expected_combo = self.seq[self.__seq_pointer]
-        for pad_id in line:
-            if pad_id == ' ':
-                continue
-            elif int(pad_id) not in expected_combo:
-                self.game_over()
+            # 2. check if players lost
+            expected_combo = self.seq[self.__seq_pointer]
+            for pad_id in line:
+                if pad_id == ' ':
+                    continue
+                elif int(pad_id) not in expected_combo:
+                    self.game_over()
 
-        # 3. correct pads but not connected
-        if len(groups) > 1:
-            return
+            # 3. correct pads but not connected
+            if len(groups) > 1:
+                return
 
-        # 4. all pads grouped together ?
-        difference = set(expected_combo) - set(map(int, list(groups[0])))
-        if difference == set():
-            self.__seq_pointer += 1
-            if self.__seq_pointer > self.end_of_game:
-                self.win()
-            if self.__seq_pointer == len(self.seq):
-                self.ack_seq()
-                self.__seq_pointer = 0
-                if self.succeses_since_complexity_bump == 2:
-                    self.added_complexity += 1
-                    self.succeses_since_complexity_bump = 0
-                else:
-                    self.succeses_since_complexity_bump += 1
-                self.seq.lengthen(1, added_complexity=self.added_complexity)
-                logging.debug(f"Expected sequence: \n{str(self)}")
-                self.seq.play(self.audio)
-            logging.debug(f"Expected combination no {str(self.__seq_pointer)}: {self.seq.str_combination(self.__seq_pointer)}")
+            # 4. all pads grouped together ?
+            difference = set(expected_combo) - set(map(int, list(groups[0])))
+            if difference == set():
+                self.__seq_pointer += 1
+                if self.__seq_pointer > self.end_of_game:
+                    self.win()
+                if self.__seq_pointer == len(self.seq):
+                    self.ack_seq()
+                    self.__seq_pointer = 0
+                    if self.succeses_since_complexity_bump == 2:
+                        self.added_complexity += 1
+                        self.succeses_since_complexity_bump = 0
+                    else:
+                        self.succeses_since_complexity_bump += 1
+                    self.seq.lengthen(1, added_complexity=self.added_complexity)
+                    logging.debug(f"Expected sequence: \n{str(self)}")
+                    self.seq.play(self.audio)
+                logging.debug(f"Expected combination no {str(self.__seq_pointer)}: {self.seq.str_combination(self.__seq_pointer)}")
+            else:
+                logging.debug(f"Missing pads: {str(difference)}")
+                return
         else:
-            logging.debug(f"Missing pads: {str(difference)}")
-            return
+            logging.debug(line)
+            if line != "start":
+                logging.info("Type start to start a new game.")             
+            else:
+                self.reinit_game()
 
     def start(self):
         """ Read lines on standard input and process them """
@@ -138,6 +148,7 @@ class Simon:
         """ Animation to play when the game is finished """
         self.__flush_stdin()
         logging.info("Win !")
+        self.playing = False
         pass
 
     def ack_seq(self):
@@ -148,3 +159,4 @@ class Simon:
     def game_over(self):
         """ Game over move """
         logging.info('Game Over')
+        self.playing = False
