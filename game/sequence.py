@@ -66,7 +66,7 @@ class Sequence:
                 new = []
 
             # find size for the new item
-            size_new = int(added_complexity)+random.randint(self.min_combo, self.round(self.mean_complexity)+1)
+            size_new = self.compute_random_size_from_progress()
             if size_new >= len(self.pads):
                 size_new = len(self.pads)-1
             while new == avoid:
@@ -82,8 +82,37 @@ class Sequence:
 
         return self.seq
 
+    def compute_size_from_mean_complexity(self, added_complexity):
+        return int(added_complexity) + random.randint(self.min_combo, self.round(self.mean_complexity)+1)
+
     def compute_complexity(self):
         self.mean_complexity = sum(map(len, self.seq))/len(self.seq)
+
+    def compute_random_size_from_progress(self):
+        start_change = 5
+        first_repartition = (95,97,99,100)
+        end_change = 20
+        end_repartition = (20,80,97,100)
+        logging.debug("charged parameters")
+        
+        score = random.randint(0,100)
+        progress = len(self.seq)
+        size = 0
+        logging.debug(f"charged variables, score={str(score)}, progress={str(progress)}")
+
+        if progress < start_change:
+            while score >= first_repartition[size]:
+                size += 1
+        elif progress > end_change:
+            while score >= end_repartition[size]:
+                size += 1
+        else:
+            while score >= self.round((first_repartition[size] * (end_change-progress) + end_repartition[size] * (progress-start_change))/(end_change - start_change)):
+                size += 1
+        size += self.min_combo 
+        logging.debug(f"chosen size={str(size)}")
+        return size
+
 
     def play_item(self, item, audio_out=None):
 
