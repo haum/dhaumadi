@@ -52,6 +52,12 @@ class Simon:
 
         self.reinit_game()
 
+    def __str__(self):
+        return '\n' + str(self.seq) + '\n' + "(pointing at combination no " + str(self.__seq_pointer) + ')'
+    
+    def __repr__(seq):
+         return '\n' + repr(self.seq) + '\n' + "(pointing at combination no " + repr(self.__seq_pointer) + ')'
+
     def reinit_game(self, initial_complexity=None, initial_length=None):
 
         if initial_complexity is not None:
