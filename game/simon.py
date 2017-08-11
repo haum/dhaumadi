@@ -53,10 +53,10 @@ class Simon:
         self.reinit_game()
 
     def __str__(self):
-        return str(self.seq) + '\n' + "(sequence length " + str(len(self.seq)) + ')'
+        return str(self.seq) + '\n' + "(sequence length: " + str(len(self.seq)) + ')'
     
     def __repr__(seq):
-         return repr(self.seq) + '\n' + "(pointing at combination no " + repr(len(self.seq)) + ')'
+        return repr(self.seq) + '\n' + "(sequence length: " + repr(len(self.seq)) + ')'
 
     def reinit_game(self, initial_complexity=None, initial_length=None):
 
@@ -105,7 +105,6 @@ class Simon:
 
         # 4. all pads grouped together ?
         difference = set(expected_combo) - set(map(int, list(groups[0])))
-        logging.debug(difference)
         if difference == set():
             self.__seq_pointer += 1
             if self.__seq_pointer > self.end_of_game:
@@ -119,11 +118,11 @@ class Simon:
                 else:
                     self.succeses_since_complexity_bump += 1
                 self.seq.lengthen(1, added_complexity=self.added_complexity)
-                logging.debug(f"Expected sequence: \n {str(self)}")
+                logging.debug(f"Expected sequence: \n{str(self)}")
                 self.seq.play(self.audio)
-            else:
-                logging.debug(f"Expected combination no {str(self.__seq_pointer)}: {self.seq.str_combination(self.__seq_pointer)}")
+            logging.debug(f"Expected combination no {str(self.__seq_pointer)}: {self.seq.str_combination(self.__seq_pointer)}")
         else:
+            logging.debug(f"Missing pads: {str(difference)}")
             return
 
     def start(self):

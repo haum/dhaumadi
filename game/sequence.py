@@ -102,4 +102,4 @@ class Sequence:
 
         for seqitem in self.seq:
             self.play_item(seqitem, audio_out=audio_out)
-        logging.debug(f"Expected and played sequence: \n {str(self)}")
+        logging.debug(f"Expected and played sequence: \n{str(self)}")
