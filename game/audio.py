@@ -16,6 +16,7 @@ Abstraction on a sound playing system
 """
 
 import logging
+import socket
 
 class Audio:
     """ Base class for audio system
@@ -47,5 +48,24 @@ class AsciiAudio(Audio):
         notes_as_str = ' '.join(map(str, notes))
         print(f'Playing for {time}ms: {notes_as_str}')
 
+class FluidSynthAudio(Audio):
+    """ A class that sends notes to fluidsynth via its TCP shell """
+
+    def __init__(self, ip='localhost', port=9800):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((ip, port))
+        self.socket.send(b'gain 5\n')
+        super().__init__()
+
+    def play_notes(self, notes=[], time=1000):
+        notes_as_str = ' '.join(map(str, notes))
+        print(f'Playing for {time}ms: {notes_as_str}')
+        buff = b''
+        for note in map(str, notes):
+            buff += b'noteon 0 '
+            buff += bytes(note, 'utf-8')
+            buff += b' 127\n'
+        print(buff)
+        self.socket.send(buff)
 
 

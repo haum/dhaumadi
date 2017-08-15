@@ -21,7 +21,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 from simon import Simon
 from settings import PRIMARY_PADS
-from audio import AsciiAudio
+from audio import AsciiAudio, FluidSynthAudio
 
 
 def main():
