@@ -69,11 +69,30 @@ class FluidSynthClient:
         if self.socket:
             self.socket.send(f'note{onoff} 0 {note} 127\n'.encode())
 
+class PadsManager(Laumio):
+
+    def __init__(self, ip='localhost'):
+        super().__init__(ip)
+
+    def display_item(self, item, on):
+        color = (0, 0, 0)
+        if on:
+            color = (255, 0, 0)
+        for pad in item:
+            self.led(pad, color)
+
+    def led(self, pad, color):
+        self.setPixelColor(pad*4+0, *color)
+        self.setPixelColor(pad*4+1, *color)
+        self.setPixelColor(pad*4+2, *color)
+        self.setPixelColor(pad*4+3, *color)
+
 class Game:
 
-    def __init__(self, speed=.8, audio=FluidSynthClient()):
+    def __init__(self, speed=.8, audio=FluidSynthClient(), pads=PadsManager()):
         self.speed = speed
         self.audio = audio
+        self.pads = pads
 
         self.sequence = []
         self.player_seqidx = 0
@@ -102,9 +121,9 @@ class Game:
 
     def show_item(self, item, on=True):
         logging.debug(', '.join(map(str, item))+f' ON:{on}')
+        self.pads.display_item(item, on)
         for pad in item:
             self.audio.note(pad, on)
-        # TODO switch lights on/off
 
     def add_item(self, length=2):
         new_item = [0]*length
