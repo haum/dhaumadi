@@ -54,7 +54,7 @@ class RS(Enum):
 
 class FluidSynthClient:
 
-    NOTES = (57, 59, 61, 64, 66, 69, 71)
+    NOTES = (50, 54, 57, 62, 66, 69, 74)
 
     def __init__(self, ip='localhost', port=9800):
         try:
