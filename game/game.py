@@ -15,10 +15,10 @@ import pdb  # TODO
 
 import os
 import sys
-import termios
 import random
 import socket
 import time
+import select
 import multiprocessing.dummy as mp
 from enum import Enum, auto
 from math import floor
@@ -47,7 +47,8 @@ PADS_WEIGHT[4] = 3
 
 
 def flush_stdin():
-    termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+    while select.select([sys.stdin], [], [], 0.01) == ([sys.stdin], [], []):
+        sys.stdin.read(1)
 
 
 # Readline state
