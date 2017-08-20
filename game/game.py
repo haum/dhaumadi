@@ -107,6 +107,7 @@ class Game:
     def start(self):
         result = RS.SEQ_COMPLETE
         while result != RS.ERROR:
+            self.speed = max(0.2, 0.8 - 0.1 * len(self.sequence))
 
             if result == RS.SEQ_COMPLETE:
                 self.add_item()
