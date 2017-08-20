@@ -11,7 +11,7 @@
 # think this stuff is worth it, you can buy me a beer or coffee in return
 #
 
-import pdb # TODO
+import pdb  # TODO
 
 import os
 import sys
@@ -19,10 +19,10 @@ import termios
 import random
 import socket
 import time
-import logging
 import multiprocessing.dummy as mp
 from enum import Enum, auto
 
+import logging
 logging.getLogger().setLevel(logging.DEBUG)
 
 # add the submodule to the path (make sure submodules are initialized)
@@ -37,6 +37,7 @@ else:
     logging.critical('Please initialize submodules first')
     sys.exit(1)
 
+
 PADS = list(range(7))
 
 
@@ -49,6 +50,7 @@ class RS(Enum):
     SEQ_COMPLETE = auto()
     ERROR = auto()
     CONTINUE = auto()
+
 
 class FluidSynthClient:
 
@@ -65,10 +67,12 @@ class FluidSynthClient:
 
     def note(self, pad, on):
         onoff = 'off'
-        if on: onoff = 'on'
+        if on:
+            onoff = 'on'
         note = FluidSynthClient.NOTES[pad]
         if self.socket:
             self.socket.send(f'note{onoff} 0 {note} 127\n'.encode())
+
 
 class PadsManager(Laumio):
 
@@ -87,6 +91,7 @@ class PadsManager(Laumio):
         self.setPixelColor(pad*4+1, *color)
         self.setPixelColor(pad*4+2, *color)
         self.setPixelColor(pad*4+3, *color)
+
 
 class Game:
 
@@ -159,8 +164,6 @@ class Game:
 
         time.sleep(self.speed/2*len(groups))
 
-
-
         # 2. check if players lost
         expected_item = self.sequence[self.player_seqidx]
         for pad_id in line:
@@ -184,7 +187,6 @@ class Game:
                 return RS.CONTINUE
         else:
             return RS.CONTINUE
-
 
 
 def main():
