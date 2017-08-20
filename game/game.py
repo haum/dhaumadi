@@ -24,6 +24,18 @@ from enum import Enum, auto
 
 logging.getLogger().setLevel(logging.DEBUG)
 
+# add the submodule to the path (make sure submodules are initialized)
+submodule_path = os.path.abspath(os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    '../_submodules/laumio/python'
+))
+sys.path.append(submodule_path)
+if os.path.exists(submodule_path):
+    from laumio import Laumio
+else:
+    logging.critical('Please initialize submodules first')
+    sys.exit(1)
+
 PADS = list(range(7))
 
 
