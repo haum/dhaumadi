@@ -109,7 +109,6 @@ class Game:
                 flush_stdin()
 
             for line in sys.stdin:
-                logging.debug(line)
                 result = self.process_line(line.strip())
                 if result != RS.CONTINUE:
                     break
