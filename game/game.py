@@ -37,7 +37,7 @@ else:
     sys.exit(1)
 
 
-PADS = list(range(7))
+PADS = list(range(1,8))
 PADS_WEIGHT = [1] * len(PADS)
 PADS_WEIGHT[1] = 3
 PADS_WEIGHT[3] = 3
