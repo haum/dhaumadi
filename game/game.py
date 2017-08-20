@@ -112,9 +112,10 @@ class Game:
         result = RS.SEQ_COMPLETE
         while result != RS.ERROR:
             self.speed = max(0.2, 0.8 - 0.1 * len(self.sequence))
+            self.length = min(len(PADS), 2 + 0.2 * len(self.sequence))
 
             if result == RS.SEQ_COMPLETE:
-                self.add_item()
+                self.add_item(length=self.length)
                 self.output_seq()
                 flush_stdin()
 
