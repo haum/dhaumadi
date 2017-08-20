@@ -71,9 +71,10 @@ class Game:
         # TODO
 
     def add_item(self, length=2):
-        # TODO : not twice the same !!!
-        new_item = tuple(random.choices(PADS, k=length))
-        self.sequence.append(new_item)
+        new_item = [0]*length
+        while len(set(new_item)) != length:
+            new_item = random.choices(PADS, k=length)
+        self.sequence.append(tuple(new_item))
 
     def process_line(self, line):
         """
