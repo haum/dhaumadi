@@ -20,6 +20,7 @@ import random
 import socket
 import time
 import logging
+import multiprocessing.dummy as mp
 from enum import Enum, auto
 
 logging.getLogger().setLevel(logging.DEBUG)
@@ -96,6 +97,7 @@ class Game:
 
         self.sequence = []
         self.player_seqidx = 0
+        self.workers = mp.Pool(processes=4)
 
     def start(self):
         result = RS.SEQ_COMPLETE
@@ -114,10 +116,14 @@ class Game:
 
     def output_seq(self):
         for item in self.sequence:
-            self.show_item(item, on=True)
-            time.sleep(self.speed)
-            self.show_item(item, on=False)
-            time.sleep(self.speed)
+            self.__play_item(item)
+
+    def __play_item(self, item, speed=None):
+        speed = self.speed if speed is None else speed
+        self.show_item(item, on=True)
+        time.sleep(speed)
+        self.show_item(item, on=False)
+        time.sleep(speed)
 
     def show_item(self, item, on=True):
         logging.debug(', '.join(map(str, item))+f' ON:{on}')
@@ -148,9 +154,13 @@ class Game:
 
         groups = line.split(' ')
         # make some noise to show we got something
-        # TODO
-        # for g in groups:
-        #     self.seq.play_item(list(g), self.audio)
+        for g in groups:
+            self.workers.apply_async(self.__play_item, [tuple(map(int, list(g))), self.speed/2])
+            time.sleep(self.speed/4)
+
+        time.sleep(self.speed/2*len(groups))
+
+
 
         # 2. check if players lost
         expected_item = self.sequence[self.player_seqidx]
