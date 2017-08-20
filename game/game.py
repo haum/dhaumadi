@@ -42,19 +42,19 @@ class FluidSynthClient:
     NOTES = (57, 59, 61, 64, 66, 69, 71)
 
     def __init__(self, ip='localhost', port=9800):
-#        try:
+        try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((ip, port))
             self.socket.send(b'gain 5\n')
-#        except :
-#            pass
+        except ConnectionRefusedError:
+            self.socket = False
 
     def note(self, pad, on):
         onoff = 'off'
         if on: onoff = 'on'
         note = FluidSynthClient.NOTES[pad]
-        self.socket.send(f'note{onoff} 0 {note}  127\n'.encode())
-        pass
+        if self.socket:
+            self.socket.send(f'note{onoff} 0 {note} 127\n'.encode())
 
 class Game:
 
