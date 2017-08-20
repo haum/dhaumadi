@@ -17,6 +17,7 @@ import os
 import sys
 import termios
 import random
+import socket
 import time
 import logging
 from enum import Enum, auto
@@ -36,10 +37,30 @@ class RS(Enum):
     ERROR = auto()
     CONTINUE = auto()
 
+class FluidSynthClient:
+
+    NOTES = (57, 59, 61, 64, 66, 69, 71)
+
+    def __init__(self, ip='localhost', port=9800):
+#        try:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.connect((ip, port))
+            self.socket.send(b'gain 5\n')
+#        except :
+#            pass
+
+    def note(self, pad, on):
+        onoff = 'off'
+        if on: onoff = 'on'
+        note = FluidSynthClient.NOTES[pad]
+        self.socket.send(f'note{onoff} 0 {note}  127\n'.encode())
+        pass
+
 class Game:
 
-    def __init__(self, speed=.8):
+    def __init__(self, speed=.8, audio=FluidSynthClient()):
         self.speed = speed
+        self.audio = audio
 
         self.sequence = []
         self.player_seqidx = 0
@@ -68,7 +89,9 @@ class Game:
 
     def show_item(self, item, on=True):
         logging.debug(', '.join(map(str, item))+f' ON:{on}')
-        # TODO
+        for pad in item:
+            self.audio.note(pad, on)
+        # TODO switch lights on/off
 
     def add_item(self, length=2):
         new_item = [0]*length
