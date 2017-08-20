@@ -21,6 +21,7 @@ import socket
 import time
 import multiprocessing.dummy as mp
 from enum import Enum, auto
+from math import floor
 
 import logging
 logging.getLogger().setLevel(logging.DEBUG)
@@ -112,7 +113,9 @@ class Game:
         result = RS.SEQ_COMPLETE
         while result != RS.ERROR:
             self.speed = max(0.2, 0.8 - 0.1 * len(self.sequence))
-            self.length = min(len(PADS), 2 + 0.2 * len(self.sequence))
+            self.length = floor(2+0.2*len(self.sequence)*abs(random.normalvariate(0,1)))
+            if self.length > len(PADS):
+                self.length = len(PADS)
 
             if result == RS.SEQ_COMPLETE:
                 self.add_item(length=self.length)
