@@ -39,6 +39,10 @@ else:
 
 
 PADS = list(range(7))
+PADS_WEIGHT = [1] * len(PADS)
+PADS_WEIGHT[1] = 3
+PADS_WEIGHT[3] = 3
+PADS_WEIGHT[4] = 3
 
 
 def flush_stdin():
@@ -139,7 +143,7 @@ class Game:
     def add_item(self, length=2):
         new_item = [0]*length
         while len(set(new_item)) != length:
-            new_item = random.choices(PADS, k=length)
+            new_item = random.choices(PADS, weights=PADS_WEIGHT, k=length)
         self.sequence.append(tuple(new_item))
 
     def process_line(self, line):
