@@ -77,6 +77,15 @@ class FluidSynthClient:
         if self.socket:
             self.socket.send(f'note{onoff} 0 {note} 127\n'.encode())
 
+    def gameover(self):
+        note = 40
+        if self.socket:
+            self.socket.send(f'noteon 1 {note} 127\n'.encode())
+        time.sleep(2.5)
+        if self.socket:
+            self.socket.send(f'noteoff 1 {note}\n'.encode())
+
+
 
 class PadsManager(Laumio):
 
@@ -129,6 +138,7 @@ class Game:
                 result = self.process_line(line.strip())
                 if result != RS.CONTINUE:
                     break
+        self.audio.gameover()
 
     def output_seq(self):
         for item in self.sequence:
