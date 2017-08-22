@@ -73,7 +73,7 @@ class FluidSynthClient:
         onoff = 'off'
         if on:
             onoff = 'on'
-        note = FluidSynthClient.NOTES[pad]
+        note = FluidSynthClient.NOTES[pad-1]
         if self.socket:
             self.socket.send(f'note{onoff} 0 {note} 127\n'.encode())
 
@@ -91,6 +91,7 @@ class PadsManager(Laumio):
             self.led(pad, color)
 
     def led(self, pad, color):
+        pad -= 1
         self.setPixelColor(pad*4+0, *color)
         self.setPixelColor(pad*4+1, *color)
         self.setPixelColor(pad*4+2, *color)
