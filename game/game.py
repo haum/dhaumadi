@@ -65,6 +65,8 @@ class FluidSynthClient:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((ip, port))
             self.socket.send(b'gain 5\n')
+            self.socket.send(b'prog 0 3\n')
+            self.socket.send(b'prog 1 65\n')
         except ConnectionRefusedError:
             logging.warning('Unable to connect to FluidSynth server')
             self.socket = False
