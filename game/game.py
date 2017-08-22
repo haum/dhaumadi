@@ -216,7 +216,7 @@ class Game:
 
 def main():
     while True:
-        g = Game()
+        g = Game(pads=PadsManager(ip='light'))
         g.start()
 
 
