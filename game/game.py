@@ -83,10 +83,7 @@ class PadsManager(Laumio):
     def __init__(self, ip='localhost'):
         super().__init__(ip)
 
-    def display_item(self, item, on):
-        color = (0, 0, 0)
-        if on:
-            color = (255, 0, 0)
+    def display_item(self, item, color):
         for pad in item:
             self.led(pad, color)
 
@@ -135,18 +132,18 @@ class Game:
 
     def output_seq(self):
         for item in self.sequence:
-            self.__play_item(item)
+            self.__play_item(item, (255,0,0))
 
-    def __play_item(self, item, speed=None):
+    def __play_item(self, item, color, speed=None):
         speed = self.speed if speed is None else speed
-        self.show_item(item, on=True)
+        self.show_item(item, color, on=True)
         time.sleep(speed)
-        self.show_item(item, on=False)
+        self.show_item(item, (0,0,0), on=False)
         time.sleep(speed)
 
-    def show_item(self, item, on=True):
+    def show_item(self, item, color, on=True):
         logging.debug(', '.join(map(str, item))+f' ON:{on}')
-        self.pads.display_item(item, on)
+        self.pads.display_item(item, color)
         for pad in item:
             self.audio.note(pad, on)
 
@@ -174,7 +171,7 @@ class Game:
         groups = line.split(' ')
         # make some noise to show we got something
         for g in groups:
-            self.workers.apply_async(self.__play_item, [tuple(map(int, list(g))), self.speed/2])
+            self.workers.apply_async(self.__play_item, [tuple(map(int, list(g))), (0,0,255), self.speed/2])
             time.sleep(self.speed/4)
 
         time.sleep(self.speed/2*len(groups))
