@@ -203,8 +203,9 @@ class Game:
 
 
 def main():
-    g = Game()
-    g.start()
+    while True:
+        g = Game()
+        g.start()
 
 
 if __name__ == "__main__":
