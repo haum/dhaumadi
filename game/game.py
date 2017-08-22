@@ -108,6 +108,12 @@ class Game:
         self.player_seqidx = 0
         self.workers = mp.Pool(processes=4)
 
+        for j in range(5):
+            for i in PADS:
+                pads.led(i, (0, 255, 0))
+                time.sleep(0.2)
+                pads.led(i, (0, 0, 0))
+
     def start(self):
         result = RS.SEQ_COMPLETE
         while result != RS.ERROR:
