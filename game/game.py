@@ -182,6 +182,7 @@ class Game:
             if pad_id == ' ':
                 continue
             elif int(pad_id) not in expected_item:
+                logging.error(f'{pad_id} received, {expected_item} expected')
                 return RS.ERROR
 
         # 3. correct pads but not connected
