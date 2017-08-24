@@ -154,7 +154,7 @@ class Game:
         time.sleep(speed)
 
     def show_item(self, item, color, on=True):
-        logging.debug(', '.join(map(str, item))+f' ON:{on}')
+        logging.debug(', '.join(map(str, item))+f' ON:{on} COLOR={color}')
         self.pads.display_item(item, color)
         for pad in item:
             self.audio.note(pad, on)
