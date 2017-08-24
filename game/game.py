@@ -77,15 +77,15 @@ class FluidSynthClient:
             onoff = 'on'
         note = FluidSynthClient.NOTES[pad-1]
         if self.socket:
-            self.socket.send(('note'+onoff+' 0 '+str(note)+' 127\n').encode())
+            self.socket.send(f'note{onoff} 0 {note} 127\n'.encode())
 
     def gameover(self):
         note = 40
         if self.socket:
-            self.socket.send(('noteon 1 '+str(note)+' 127\n').encode())
+            self.socket.send(f'noteon 1 {note} 127\n'.encode())
         time.sleep(2.5)
         if self.socket:
-            self.socket.send(('noteoff 1 '+str(note)+'\n').encode())
+            self.socket.send(f'noteoff 1 {note}\n'.encode())
 
 
 
@@ -156,7 +156,7 @@ class Game:
         time.sleep(speed)
 
     def show_item(self, item, color, on=True):
-        logging.debug(', '.join(map(str, item))+' ON:'+str(on)+' COLOR='+str(color))
+        logging.debug(', '.join(map(str, item))+f' ON:{on} COLOR={color}')
         self.pads.display_item(item, color)
         for pad in item:
             self.audio.note(pad, on)
@@ -196,7 +196,7 @@ class Game:
             if pad_id == ' ':
                 continue
             elif int(pad_id) not in expected_item:
-                logging.error(str(pad_id)+' received, '+str(expected_item)+' expected')
+                logging.error(f'{pad_id} received, {expected_item} expected')
                 return RS.ERROR
 
         # 3. correct pads but not connected
