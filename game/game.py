@@ -126,7 +126,7 @@ class Game:
     def start(self):
         result = RS.SEQ_COMPLETE
         while result != RS.ERROR:
-            self.speed = max(0.2, 2 - 0.2 * len(self.sequence))
+            self.speed = max(0.2, 1 - 0.1 * len(self.sequence))
             self.length = floor(2+0.2*len(self.sequence)*abs(random.normalvariate(0,1)))
             if self.length > len(PADS):
                 self.length = len(PADS)
@@ -143,8 +143,10 @@ class Game:
         self.audio.gameover()
 
     def output_seq(self):
-        for item in self.sequence:
+        for item in self.sequence[:-1]:
             self.__play_item(item, (255,0,0))
+        self.__play_item(self.sequence[-1], (255,0,0), self.speed*2)
+
 
     def __play_item(self, item, color, speed=None):
         speed = self.speed if speed is None else speed
