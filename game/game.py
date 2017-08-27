@@ -100,6 +100,7 @@ class PadsManager(Laumio):
 
     def led(self, pad, color):
         pad -= 1
+        logging.debug(f'Send led {pad} = {color}')
         self.setPixelColor(pad*4+0, *color)
         self.setPixelColor(pad*4+1, *color)
         self.setPixelColor(pad*4+2, *color)
@@ -126,7 +127,7 @@ class Game:
     def start(self):
         result = RS.SEQ_COMPLETE
         while result != RS.ERROR:
-            self.speed = max(0.2, 1 - 0.1 * len(self.sequence))
+            self.speed = max(0.2, 1.5 - 0.2 * len(self.sequence))
             self.length = floor(2+0.2*len(self.sequence)*abs(random.normalvariate(0,1)))
             if self.length > len(PADS):
                 self.length = len(PADS)
@@ -134,6 +135,7 @@ class Game:
             if result == RS.SEQ_COMPLETE:
                 self.add_item(length=self.length)
                 self.output_seq()
+                time.sleep(1.5)
                 flush_stdin()
 
             for line in sys.stdin:
