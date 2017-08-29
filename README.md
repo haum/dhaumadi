@@ -22,7 +22,7 @@ $ git submodule update
 
 demarage de fluidsynth en mode serveur 
 
-$ fluidsynth --server -a alsa /usr/share/sounds/sf2/FluidR3_GS.sf2
+$ fluidsynth --server -a alsa /usr/share/sounds/sf2/FluidR3_GM.sf2
 
 demarrage du jeu en mode console
 
