@@ -59,6 +59,7 @@ class RS(Enum):
 class FluidSynthClient:
 
     NOTES = (50, 54, 57, 62, 66, 69, 74)
+    ACCORD = (60 , 64 , 67)
 
     def __init__(self, ip='localhost', port=9800):
         try:
@@ -86,6 +87,24 @@ class FluidSynthClient:
         time.sleep(2.5)
         if self.socket:
             self.socket.send(f'noteoff 1 {note}\n'.encode())
+            
+    def seqgood(self):
+        logging.debug(f'sequence ok next one')
+        for note in FluidSynthClient.ACCORD :
+            if self.socket:
+                logging.debug(f'Send note {note}')
+                self.socket.send(f'noteon 1 {note} 127\n'.encode())
+            time.sleep(0.3)
+            if self.socket:
+                self.socket.send(f'noteoff 1 {note}\n'.encode())
+        time.sleep(0.3)
+        for note in FluidSynthClient.ACCORD :
+            if self.socket:
+                self.socket.send(f'noteon 1 {note} 64\n'.encode())
+        time.sleep(0.5)
+        for note in FluidSynthClient.ACCORD :
+            if self.socket:
+                self.socket.send(f'noteoff 1 {note} \n'.encode())
 
 
 
@@ -133,6 +152,8 @@ class Game:
                 self.length = len(PADS)
 
             if result == RS.SEQ_COMPLETE:
+                self.audio.seqgood()
+                time.sleep(1.5)
                 self.add_item(length=self.length)
                 self.output_seq()
                 time.sleep(1.5)
