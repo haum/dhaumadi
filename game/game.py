@@ -163,6 +163,7 @@ class Game:
                 result = self.process_line(line.strip())
                 if result != RS.CONTINUE:
                     break
+        logging.debug(f'LEVEL {self.player_seqidx}')
         self.audio.gameover()
 
     def output_seq(self):
