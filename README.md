@@ -2,6 +2,7 @@
 Code of dHaumadi project
 
 Infos ici: https://pad.aumbox.fr/p/20170802_Teriaki2017
+Boite: https://www.thingiverse.com/thing:679809/#files
 
 
 dHaumadi est un jeu collaboratif géant.
