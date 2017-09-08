@@ -108,6 +108,23 @@ class FluidSynthClient:
             if self.socket:
                 self.socket.send(f'noteoff 1 {note} \n'.encode())
 
+class LedsManager():
+
+    def __init__(self, ledbypad = 1):
+        self.led_pad = ledbypad
+
+
+    def display_item(self, item, color):
+        for pad in item:
+            self.led(pad, color)
+
+    def led(self, pad, color):
+        pad -= 1
+        logging.debug(f'Send led {pad} = {color}')
+        self.setPixelColor(pad*ledbypad+0, *color)
+        self.setPixelColor(pad*ledbypad+1, *color)
+        self.setPixelColor(pad*ledbypad+2, *color)
+        self.setPixelColor(pad*ledbypad+3, *color)
 
 
 class PadsManager(Laumio):
