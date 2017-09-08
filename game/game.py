@@ -87,9 +87,10 @@ class FluidSynthClient:
         time.sleep(2.5)
         if self.socket:
             self.socket.send(f'noteoff 1 {note}\n'.encode())
-            
+
     def seqgood(self):
         logging.debug(f'sequence ok next one')
+        # Arpege
         for note in FluidSynthClient.ACCORD :
             if self.socket:
                 logging.debug(f'Send note {note}')
@@ -98,6 +99,7 @@ class FluidSynthClient:
             if self.socket:
                 self.socket.send(f'noteoff 1 {note}\n'.encode())
         time.sleep(0.3)
+        #Accord
         for note in FluidSynthClient.ACCORD :
             if self.socket:
                 self.socket.send(f'noteon 1 {note} 64\n'.encode())
