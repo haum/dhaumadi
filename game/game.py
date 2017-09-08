@@ -21,6 +21,8 @@ import multiprocessing.dummy as mp
 from enum import Enum, auto
 from math import floor
 
+import configparser
+
 import logging
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -258,8 +260,36 @@ class Game:
         else:
             return RS.CONTINUE
 
+def read_config():
+    configfile_name = "config.ini"
+    # Check if there is already a configurtion file
+    if not os.path.isfile(configfile_name):
+        logging.debug(f'New Config File')
+        # Create the configuration file as it doesn't exist yet
+
+        # Add content to the file
+        Config = configparser.ConfigParser()
+        Config.add_section('LED')
+        Config.set('LED', 'connect', 'laumio')
+        Config.set('LED', 'ip', '192.168.33.132')
+        Config.set('LED', 'nb_pod', '4')
+        Config.add_section('SYNTH')
+        Config.set('SYNTH','host','localhost')
+        with open(configfile_name, 'w') as cfgfile:
+            Config.write(cfgfile)
+
+    # Load the configuration file
+    with open(configfile_name) as f:
+        Config = configparser.RawConfigParser(allow_no_value=True)
+        Config.read_file(f)
+        for section in Config.sections():
+            logging.debug(f'Section: {section}')
+            for options in Config.options(section):
+                logging.debug(f'\t {options} : {Config.get(section, options)}')
+
 
 def main():
+    read_config()
     while True:
         g = Game(pads=PadsManager(ip='192.168.33.132'))
         g.start()
