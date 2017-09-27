@@ -34,8 +34,8 @@ class Leds:
         self.strip.begin()
 
     def setPixelColor(self, pixel, r, g, b):
-        """ Set the color of all the leds pixel of the Laumio
-        pixel -- LED ID (0~12)
+        """ Set the color of all the leds pixel of the Leds strip
+        pixel -- LED ID (0~xxx)
         r -- red byte
         g -- green byte
         b -- blue byte
