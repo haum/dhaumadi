@@ -38,10 +38,10 @@ else:
     logging.critical('Please initialize submodules first')
     sys.exit(1)
 
-try:
-    from leds.py import Leds
-except:
-    logging.critical('Unable to load Leds module')
+#try:
+from leds import Leds
+#except:
+#    logging.critical('Unable to load Leds module')
 
 
 
@@ -116,11 +116,12 @@ class FluidSynthClient:
             if self.socket:
                 self.socket.send(f'noteoff 1 {note} \n'.encode())
 
+
 class LedsManager(Leds):
 
-    def __init__(self, ledbypad = 1):
+    def __init__(self, ledbypad=1):
+        super().__init__()
         self.led_pad = ledbypad
-
 
     def display_item(self, item, color):
         for pad in item:
@@ -131,6 +132,7 @@ class LedsManager(Leds):
         logging.debug(f'Send led {pad} = {color}')
         for i in range(self.led_pad):
             self.setPixelColor(pad*self.led_pad+i, *color)
+
 
 class PadsManager(Laumio):
 
