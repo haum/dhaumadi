@@ -38,6 +38,12 @@ else:
     logging.critical('Please initialize submodules first')
     sys.exit(1)
 
+#try:
+from leds import Leds
+#except:
+#    logging.critical('Unable to load Leds module')
+
+
 
 PADS = list(range(1,8))
 PADS_WEIGHT = [1] * len(PADS)
@@ -110,11 +116,12 @@ class FluidSynthClient:
             if self.socket:
                 self.socket.send(f'noteoff 1 {note} \n'.encode())
 
-class LedsManager():
 
-    def __init__(self, ledbypad = 1):
+class LedsManager(Leds):
+
+    def __init__(self, ledbypad=1):
+        super().__init__()
         self.led_pad = ledbypad
-
 
     def display_item(self, item, color):
         for pad in item:
@@ -123,10 +130,8 @@ class LedsManager():
     def led(self, pad, color):
         pad -= 1
         logging.debug(f'Send led {pad} = {color}')
-        self.setPixelColor(pad*ledbypad+0, *color)
-        self.setPixelColor(pad*ledbypad+1, *color)
-        self.setPixelColor(pad*ledbypad+2, *color)
-        self.setPixelColor(pad*ledbypad+3, *color)
+        for i in range(self.led_pad):
+            self.setPixelColor(pad*self.led_pad+i, *color)
 
 
 class PadsManager(Laumio):
@@ -291,7 +296,9 @@ def read_config():
 def main():
     read_config()
     while True:
-        g = Game(pads=PadsManager(ip='192.168.33.132'))
+# TODO  test config LEDs
+        g = Game(pads=LedsManager(1))
+        # g = Game(pads=PadsManager(ip='192.168.33.132'))
         g.start()
 
 
