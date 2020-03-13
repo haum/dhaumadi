@@ -15,7 +15,7 @@ import os
 import sys
 import random
 import socket
-import time
+import time, datetime
 import select
 import multiprocessing.dummy as mp
 from enum import Enum, auto
@@ -24,6 +24,7 @@ from math import floor
 import configparser
 
 import logging
+logging.basicConfig(filename="/home/pi/dhaumadi/log2.txt", format='%(message)s')
 logging.getLogger().setLevel(logging.DEBUG)
 
 # add the submodule to the path (make sure submodules are initialized)
@@ -37,6 +38,12 @@ if os.path.exists(submodule_path):
 else:
     logging.critical('Please initialize submodules first')
     sys.exit(1)
+
+#try:
+from leds import Leds
+#except:
+#    logging.critical('Unable to load Leds module')
+
 
 
 PADS = list(range(1,8))
@@ -110,11 +117,12 @@ class FluidSynthClient:
             if self.socket:
                 self.socket.send(f'noteoff 1 {note} \n'.encode())
 
-class LedsManager():
 
-    def __init__(self, ledbypad = 1):
+class LedsManager(Leds):
+
+    def __init__(self, ledbypad=1):
+        super().__init__()
         self.led_pad = ledbypad
-
 
     def display_item(self, item, color):
         for pad in item:
@@ -122,11 +130,9 @@ class LedsManager():
 
     def led(self, pad, color):
         pad -= 1
-        logging.debug(f'Send led {pad} = {color}')
-        self.setPixelColor(pad*ledbypad+0, *color)
-        self.setPixelColor(pad*ledbypad+1, *color)
-        self.setPixelColor(pad*ledbypad+2, *color)
-        self.setPixelColor(pad*ledbypad+3, *color)
+        #logging.debug(f'Send led {pad} = {color}')
+        for i in range(self.led_pad):
+            self.setPixelColor(pad*self.led_pad+i, *color)
 
 
 class PadsManager(Laumio):
@@ -176,6 +182,7 @@ class Game:
                 self.audio.seqgood()
                 time.sleep(1.5)
                 self.add_item(length=self.length)
+                logging.debug(self.length)
                 self.output_seq()
                 time.sleep(1.5)
                 flush_stdin()
@@ -184,16 +191,29 @@ class Game:
                 result = self.process_line(line.strip())
                 if result != RS.CONTINUE:
                     break
-        logging.debug(f'LEVEL {self.player_seqidx}')
+        logging.debug(f'LEVEL {len(self.sequence)}')
+        sup=True
+        try:
+            with open('/home/pi/dhaumadi/hightscore.txt', 'r') as file:
+                if (len(self.sequence) <= int(file.readline().split()[1])):
+                    sup=False
+        except:
+            pass
+        if sup:
+            with open('/home/pi/dhaumadi/hightscore.txt', 'w') as file:
+                now = datetime.datetime.now()
+                file.write(f'LEVEL {len(self.sequence)} : {now.hour}:{now.minute} {now.day}/{now.month}/{now.year}')
         self.audio.gameover()
 
     def output_seq(self):
         for item in self.sequence[:-1]:
             self.__play_item(item, (255,0,0))
         self.__play_item(self.sequence[-1], (255,0,0), self.speed*2)
+        logging.debug("====")
 
 
     def __play_item(self, item, color, speed=None):
+        logging.debug("--")
         speed = self.speed if speed is None else speed
         self.show_item(item, color, on=True)
         time.sleep(speed)
@@ -201,7 +221,8 @@ class Game:
         time.sleep(speed)
 
     def show_item(self, item, color, on=True):
-        logging.debug(', '.join(map(str, item))+f' ON:{on} COLOR={color}')
+        #logging.debug(', '.join(map(str, item))+f' ON:{on} COLOR={color}')
+        logging.debug('['+','.join(map(str, item))+']'+f' ON:{on}')
         self.pads.display_item(item, color)
         for pad in item:
             self.audio.note(pad, on)
@@ -291,8 +312,11 @@ def read_config():
 def main():
     read_config()
     while True:
-        g = Game(pads=PadsManager(ip='192.168.33.132'))
+# TODO  test config LEDs
+        g = Game(pads=LedsManager(4))
+        # g = Game(pads=PadsManager(ip='192.168.33.132'))
         g.start()
+        #g.show_item((1,),(255,0,0))
 
 
 if __name__ == "__main__":
